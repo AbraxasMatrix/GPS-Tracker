@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GPS Tracker</title>
+    <script>
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(sendLocation, errorHandler);
+            } else {
+                alert("Geolocation is not supported.");
+            }
+        }
+
+        function sendLocation(position) {
+            let lat = position.coords.latitude;
+            let lon = position.coords.longitude;
+
+            let webhookURL = "https://script.google.com/macros/s/YOUR_GOOGLE_SCRIPT_ID/exec"; 
+            fetch(webhookURL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ latitude: lat, longitude: lon })
+            });
+
+            document.getElementById("output").innerHTML = 
+                "Latitude: " + lat + "<br>Longitude: " + lon;
+        }
+
+        function errorHandler(error) {
+            alert("Error getting location: " + error.message);
+        }
+    </script>
+</head>
+<body onload="getLocation()">
+    <h1>Fetching GPS Location...</h1>
+    <p id="output"></p>
+</body>
+</html>
